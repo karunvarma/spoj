@@ -1,0 +1,101 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define inf  1e9
+
+int arr[51][1005];
+int cost[51][1005];
+int n,t;
+
+
+struct info
+{
+    int time,toll;
+    info(int time=0,int toll=0)
+    {
+        this->time=time;
+        this->toll=toll;
+    }
+};
+
+info memo[51][1005];
+
+
+
+
+
+
+info solve(int currCity,int time_left)
+{
+    // if time is less
+    if(time_left<0) return info(inf,inf);
+
+    // if reached to last city
+    if(currCity==n-1)  return info(0,0);
+
+    if(memo[currCity][time_left].time!=-1 and memo[currCity][time_left].toll)
+        return memo[currCity][time_left];
+
+    info ans=info(inf,inf);
+
+    for(int nextcity=0;nextcity<n;nextcity++)
+    {
+        if(nextcity==currCity) continue;
+
+        info to=solve(nextcity,time_left-arr[currCity][nextcity]);
+        if(to.toll!=inf and ans.toll>to.toll+cost[currCity][nextcity]){
+            ans.toll=to.toll+cost[currCity][nextcity];
+            ans.time=arr[currCity][nextcity]+to.time;
+        }
+    }
+    memo[currCity][time_left].time=ans.time;
+    memo[currCity][time_left].toll=ans.toll;
+    return ans;
+
+}
+
+void init()
+{
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<=t;j++)
+        {
+            memo[i][j]=info(-1,-1);
+        }
+    }
+}
+
+
+
+
+int main()
+{
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    while(1){
+
+        cin>>n>>t;
+        if(n==0 and t==0) break;
+
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                cin>>arr[i][j];
+            }
+        }
+
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                cin>>cost[i][j];
+            }
+        }
+        init();
+        info ans=solve(0,t);
+        cout<<ans.toll<<" "<<ans.time<<endl;
+    }
+
+}

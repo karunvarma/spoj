@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define inf  1e9
+
+
+typedef pair<int, int> ii ;
+typedef pair<int,ii> iii;
+
+
+const int maxn=110;
+vector<iii> arr[maxn];
+
+int main()
+{
+
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t;
+    cin>>t;
+
+    while(t--)
+    {
+        int k,n,r;
+        cin>>k>>n>>r;
+
+        for(int i=1;i<=n;i++) arr[i].clear();
+        while(r--)
+        {
+            int u,v,l,t;
+            cin>>u>>v>>l>>t;
+            arr[u].push_back(make_pair(v,ii(l,t)));
+        }
+        priority_queue<iii,vector<iii>,greater<iii>> pq;
+        pq.push(make_pair(0,ii(0,1)));
+        bool found=false;
+        int ans=-1;
+
+
+        while(!pq.empty())
+        {
+            iii temp=pq.top();pq.pop();
+        
+            int l=temp.first;
+            int t=temp.second.first;
+            int u=temp.second.second;
+        
+
+            if(u==n)
+            {
+                ans=l;
+                found=true;
+                break;
+            }
+
+            for(auto v:arr[u])
+            {
+                int destination=v.first;
+                int dlength=v.second.first;
+                int dtoll=v.second.second;
+
+                if(dtoll+t<=k)
+                {
+                    pq.push(make_pair(dlength+l,ii(dtoll+t,destination)));
+                }
+            }
+
+        }
+        if(found) cout<<ans<<endl;
+        else    cout<<-1<<endl;
+    }
+
+}

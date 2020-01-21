@@ -1,0 +1,113 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+int m,n;
+
+
+char arr[21][21];
+bool vis[21][21];
+bool flag;
+
+int dx[]={1,-1,0,0};
+int dy[]={0,0,1,-1};
+
+bool valid(int i,int j)
+{
+    return (i>=0 and i<m and j>=0 and j<n );
+}
+
+
+void dfs(int i,int j)
+{
+   
+    vis[i][j]=true;
+    if(flag)    return;
+
+    for(int k=0;k<4;k++)
+    {
+        int nx=i+dx[k];
+        int ny=j+dy[k];
+
+        if(valid(nx,ny) and flag==0 and arr[nx][ny]!='#' and vis[nx][ny]==0)
+        {
+            
+            if((nx==0 || ny==0 || nx==m-1 || ny==n-1) and arr[nx][ny]=='.') flag=1;
+            dfs(nx,ny);
+        }
+
+    }
+
+
+
+
+}
+
+
+int main()
+{
+
+   int t;
+   cin>>t;
+
+   while(t--)
+   {
+
+        flag=false;
+        int point=0;
+        cin>>m>>n;
+
+        set<pair<int,int>>s;
+
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                cin>>arr[i][j];
+                vis[i][j]=0;
+            }
+        }
+
+        for(int i=1;i<m-1;i++)
+        {
+            if(arr[i][0]=='.') s.insert({i,0});
+            if(arr[i][n-1]=='.')s.insert({i,n-1});
+        }
+
+      
+        for(int j=0;j<n;j++)
+        {
+            if(arr[0][j]=='.') s.insert({0,j});
+            if(arr[m-1][j]=='.') s.insert({m-1,j});
+        }
+
+
+        if(s.size()==2)
+        {
+
+            bool ok=false;
+           
+                for(int i=0;i<m;i++){
+                    for(int j=0;j<n;j++)
+                    {
+                        if( (i==0 || j==0 || i==m-1 || j==n-1) && arr[i][j]=='.')
+                        {
+                            dfs(i,j);
+                            ok=true;
+                            break;
+                        }
+                    }
+                    if(ok) break;
+                }
+                if(flag)
+                {
+                    cout<<"valid"<<endl;
+                }
+                else cout<<"invalid"<<endl;
+        }
+        else
+        {
+            cout<<"invalid"<<endl;
+        }
+   }
+   return 0;
+}

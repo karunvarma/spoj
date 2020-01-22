@@ -1,0 +1,86 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define inf  1e9
+
+
+// algorithm: multi source bfs
+
+//const int mov[4][2] = {{-1,0},{0,-1},{0,1},{1,0}};
+
+
+
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t;
+    cin>>t;
+
+    while(t--)
+    {
+        int n,r,m;
+        cin>>n>>r>>m;
+        vector<int> graph[n+1];
+
+        for(int i=0;i<r;i++)
+        {
+            int u,v;
+            cin>>u>>v;
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+
+        int vis[n+1];
+        memset(vis,-1,sizeof(vis));
+
+        queue<pair<int,pair<int,int>>>q;
+
+        for(int i=0;i<m;i++)
+        {
+            int city,power;
+            cin>>city>>power;
+            q.push({i,{city,power}});
+            vis[city]=i;
+        }
+        bool not_optimum=false;
+        int cnt=0;
+
+        while(!q.empty())
+        {
+            auto u=q.front();
+            q.pop();
+
+            int curr_soldier=u.first;
+            if(u.second.second==0) continue;
+
+            for(auto v:graph[u.second.first])
+            {
+                if(vis[v]!=-1 and vis[v]!=curr_soldier)
+                {
+                    not_optimum=true;
+                    break;
+                }
+                else if(vis[v]==curr_soldier) continue;
+                else {
+                    vis[v]=curr_soldier;
+                    q.push({curr_soldier,{v,u.second.second-1}});
+                    cnt++;
+                }
+            }
+        }
+        if(not_optimum) cout<<"No"<<endl;
+        else
+        {
+            if(cnt+m==n) cout<<"Yes"<<endl;
+            else cout<<"No"<<endl;
+        }
+
+
+
+
+
+    }
+
+}

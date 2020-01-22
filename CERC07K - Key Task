@@ -1,0 +1,111 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define inf  1e9
+
+
+
+const int mov[4][2] = {{-1,0},{0,-1},{0,1},{1,0}};
+const int MAXN=104;
+int R,C;
+char board[MAXN][MAXN];
+bool vis[MAXN][MAXN][16];
+
+struct pos
+{
+    int x,y,key;
+    pos(){};
+    pos(int x,int y,int key)
+    {
+        this->x=x;
+        this->y=y;
+        this->key=key;
+    }
+};
+
+
+int main()
+{
+    while(1)
+    {
+        cin>>R>>C;
+        if(!R and !C) break;
+        memset(vis,0,sizeof(vis));
+
+        queue<pos>q;
+        for(int i=0;i<R;i++){
+            for(int j=0;j<C;j++){
+                cin>>board[i][j];
+                if(board[i][j]=='*')
+                {
+                    q.push(pos(i,j,0));
+                    vis[i][j][0]=1;
+                }
+            }
+        }
+
+        int step=0;
+        bool found=false;
+        int ans=-1;
+        while(!q.empty())
+        {
+            if(found) break;
+            int n=q.size();
+            while(n--)
+            {
+
+
+
+                int x=q.front().x;
+                int y=q.front().y;
+                int key=q.front().key;
+                q.pop();
+
+                for(int k=0;k<4;k++)
+                {
+                    int nx=x+mov[k][0];
+                    int ny=y+mov[k][1];
+
+                   
+                    if ( nx < 0 || nx >= R || ny < 0 || ny >= C )continue;
+                    if ( board[nx][ny] == '#' ) continue;
+
+                    if(board[nx][ny]=='X')
+                    {
+                        
+                        found=true;
+                        ans=step+1;
+                        break;
+                    }
+                
+                    int nkey=key;
+
+                    // if it is a key then update the key
+                    if(board[nx][ny]=='b') nkey|=1;
+                    else if(board[nx][ny]=='y') nkey|=2;
+                    else if(board[nx][ny]=='r') nkey|=4;
+                    else if(board[nx][ny]=='g') nkey|=8;
+
+                    // if it is a room and but no key present
+                    if(board[nx][ny]=='B' and !(key&1)) continue;
+                    if(board[nx][ny]=='Y' and !(key&2)) continue;
+                    if(board[nx][ny]=='R' and !(key&4)) continue;
+                    if(board[nx][ny]=='G' and !(key&8)) continue;
+
+
+                    if(vis[nx][ny][key]==1) continue;
+                    q.push({nx,ny,nkey});
+                    vis[nx][ny][key]=1;
+                }
+
+            }
+            step++;
+        }
+        if(found)   cout<<"Escape possible in "<<ans<<" steps."<<endl;
+        else        cout<<"The poor student is trapped!"<<endl;
+
+
+
+    }
+
+}

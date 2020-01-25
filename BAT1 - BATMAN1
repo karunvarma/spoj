@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef pair<int, int> pii;
+int batches,items,budget;
+vector<vector<pii>> arr(25,vector<pii>(25));
+int seal[25];
+int dp[25][1001][2];
+ 
+ 
+int solve(int cn,int rem,int open)
+{
+    if(cn==batches) return 0;
+    if(dp[cn][rem][open]!=-1) return dp[cn][rem][open];
+ 
+    int cost=solve(cn+1,rem,0);
+    if(open==0)
+    {
+        if(seal[cn]<=rem)
+        {
+            int nrem=rem-seal[cn];
+            cost=max(cost,solve(cn,nrem,1));
+        }
+    }
+    else
+    {
+        for(int j=0;j<items;j++){
+            if(arr[cn][j].first<=rem)
+            {
+                cost=max(cost,arr[cn][j].second+solve(cn,rem-arr[cn][j].first,1));
+            }
+        }
+    }
+    return dp[cn][rem][open]=cost;
+}
+ 
+int main()
+{
+ 
+    int t;
+    cin>>t;
+ 
+    while(t--)
+    {
+        cin>>batches>>items>>budget;
+        for(int i=0;i<batches;i++) cin>>seal[i];
+ 
+        for(int i=0;i<batches;i++)
+        {
+            for(int j=0;j<items;j++)
+            {
+                cin>>arr[i][j].first;
+            }
+        }
+ 
+        for(int i=0;i<batches;i++)
+        {
+            for(int j=0;j<items;j++)
+            {
+                cin>>arr[i][j].second;
+            }
+        }
+        memset(dp,-1,sizeof(dp));
+        cout<<solve(0,budget,0)<<endl;
+ 
+ 
+    }
+}
